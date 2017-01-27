@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delayed Google Search</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<style>
+    body {
+        /*background-image: url("paper.gif");*/
+        background-color: cyan;
+    }
+</style>
+
+<h1 id="websiteTitle">QueueDelay</h1>
+
+
+
+<script src="https://www.gstatic.com/firebasejs/3.6.5/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBQk1RNjDYFz3-teXNdOWj82AkuB8KaweM",
+    authDomain: "queuedelay.firebaseapp.com",
+    databaseURL: "https://queuedelay.firebaseio.com",
+    storageBucket: "queuedelay.appspot.com",
+    messagingSenderId: "422020204633"
+  };
+  firebase.initializeApp(config);
+</script>
+
+<!--Query input and button-->
+<input type="text" id="query" value="">
+<input type="submit" id="searchButton" value="Search" onclick="searchClicked()">
+
+<!--Handle search button click-->
+<script>
+    function searchClicked() {
+        var ref = firebase.database().ref("text");
+
+        var onSuccess = function(dataSnapshot){
+            console.log("success");
+            var query = dataSnapshot.val();
+            var link = "http://www.google.com/#q=";
+            link = link.concat(query);
+//            window.open(link);
+            window.location.href = link;
+
+            var newQuery = document.getElementById("query").value;
+            console.log(newQuery);
+            var toUpdate = {};
+            toUpdate["text"] = newQuery;
+            firebase.database().ref().update(toUpdate);
+        };
+        var onFailure = function(err){
+            console.log("Errorcode: " + err.code);
+        };
+
+        ref.once("value", onSuccess, onFailure);
+    }
+</script>
+</body>
+</html>
+
